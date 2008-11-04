@@ -6,13 +6,19 @@ See http://dev.mysql.com/tech-resources/articles/hierarchical-data.html for more
 
 == Why another nested-set implementation?
 
-There are a number of very good nested set implementations already available. Underneath the covers, this implementation functions very differently from others. Once a node is loaded, a "snapshot" of the entire tree is stored in memory. Subsequent operations are handled in the snapshot. When any one node is saved, the node position data for the entire snapshot is saved to the database.
+There are a number of very good nested set implementations already available. Underneath the covers, this implementation functions very differently from others:
 
-In addition, the left and right positions of each node are stored as floats, rather than the typical integer. This means it's possible to add or change a node without altering other rows in the database.
+* Once a node is loaded, a "snapshot" of the entire tree is stored in memory. Subsequent operations are handled in the snapshot.
 
-This brings the following improvements:
+* In addition, the left and right positions of each node are stored as floats, rather than the typical integer.
+
+== Key Features
 
 * Nodes can be inserted into the tree before saving. In fact, an entire tree can be built without a single database call. This allows a node to use the <b>standard Rails validation framework</b> to verify its position within the tree. If the validation fails, the node will not be saved into the tree.
+
+* Adding or repositioning a node does not alter other nodes in the database, since left and right position indices are not necessarily sequential integers.
+
+* Full support for single-table inheritance.
 
 * Nodes can be <b>automatically sorted</b> upon insertion.
 
