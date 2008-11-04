@@ -1,0 +1,62 @@
+= AmazingNestedSet
+
+Amazing Nested Set is an improved implementation of the nested set pattern.
+
+See http://dev.mysql.com/tech-resources/articles/hierarchical-data.html for more information about storing hierarchical data in a relational database.
+
+== Why another nested-set implementation?
+
+There are a number of very good nested set implementations already available. Underneath the covers, this implementation functions very differently from others. Once a node is loaded, a "snapshot" of the entire tree is stored in memory. Subsequent operations are handled in the snapshot. When any one node is saved, the node position data for the entire snapshot is saved to the database.
+
+In addition, the left and right positions of each node are stored as floats, rather than the typical integer. This means it's possible to add or change a node without altering other rows in the database.
+
+This brings the following improvements:
+
+* Nodes can be inserted into the tree before saving. In fact, an entire tree can be built without a single database call. This allows a node to use the <b>standard Rails validation framework</b> to verify its position within the tree. If the validation fails, the node will not be saved into the tree.
+
+* Nodes can be <b>automatically sorted</b> upon insertion.
+
+* No need for a <tt>parent_id</tt> column.
+
+== Usage
+
+To make use of <tt>amazing_nested_set</tt>, add two fields to your model: <tt>lft</tt> and <tt>rgt</tt>:
+
+  class CreateCategories < ActiveRecord::Migration
+    def self.up
+      create_table :categories do |t|
+        t.string  :name
+        t.float :lft
+        t.float :rgt
+      end
+    end
+  
+    def self.down
+      drop_table :categories
+    end
+  end
+
+To add the capabilities to your model:
+
+  class Category < ActiveRecord::Base
+    acts_as_nested_set
+  end
+
+If the node class implements the <tt>Comparable</tt> mixin, an optional <tt>autosort</tt> attribute may be passed specifying that nodes are to be inserted in order. Refer to the API docs for more information.
+
+Run <tt>rake rdoc</tt> to generate the API docs and see <tt>NormElton::Acts::NestedSet::SingletonMethods</tt> for more info.
+
+== Warning
+
+This code may misbehave if two instances of the same tree are being modified simultaneously.
+
+== Inspirations
+
+Other implementations of hierarchical data include:
+
+* ActsAsTree - http://wiki.rubyonrails.org/rails/pages/ActsAsTree
+* ActsAsNestedSet - http://wiki.rubyonrails.org/rails/pages/ActsAsNestedSet
+* BetterNestedSet - http://agilewebdevelopment.com/plugins/betternestedset
+* AwesomeNestedSet - http://github.com/collectiveidea/awesome_nested_set/tree/master
+
+Copyright (c) 2008 Norman Elton, released under the MIT License
