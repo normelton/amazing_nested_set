@@ -91,6 +91,14 @@ module NormElton
           [self] + children
         end
         
+        def self_and_direct_children
+          [self] + direct_children
+        end
+        
+        def self_and_ancestors
+          ancestors + [self]
+        end
+        
         def left
           self[self.class.left_column_name] || 1
         end
@@ -100,19 +108,30 @@ module NormElton
         end
         
         def siblings(direction = :both)
+          all_children = parent.direct_children
+          
           if root?
             []
-            
           elsif (direction == :both)
-            parent.direct_children - [self]
-            
+            all_children - [self]
           elsif (direction == :left)
-            all_children = parent.direct_children
             all_children.to(all_children.index(self))[0..-2]
-            
           elsif (direction == :right)
-            all_children = parent.direct_children
             all_children.from(all_children.index(self))[1..-1]
+          end
+        end
+        
+        def self_and_siblings(direction = :both)
+          all_children = parent.direct_children
+          
+          if root?
+            [self]
+          elsif (direction == :both)
+            all_children
+          elsif (direction == :left)
+            all_children.to(all_children.index(self))[0..-1]
+          elsif (direction == :right)
+            all_children.from(all_children.index(self))[0..-1]
           end
         end
         

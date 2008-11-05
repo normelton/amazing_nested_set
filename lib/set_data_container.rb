@@ -58,7 +58,10 @@ class SetDataContainer
         @set_members = @options[:class].find :all, :conditions => { @options[:set_column].to_sym => @set_id }, :order => @options[:left_column].to_sym
       end
       
-      replace_node from
+      unless from.nil?
+        replace_node from
+      end
+      
       infer_self
     end
     
