@@ -31,9 +31,10 @@ To make use of <tt>amazing_nested_set</tt>, add two fields to your model: <tt>lf
   class CreateCategories < ActiveRecord::Migration
     def self.up
       create_table :categories do |t|
-        t.string  :name
+		t.integer :set_id
         t.float :lft
         t.float :rgt
+        t.string  :name
       end
     end
   

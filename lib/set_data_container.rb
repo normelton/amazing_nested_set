@@ -18,7 +18,7 @@ class SetDataContainer
       set_members << node
     end
     
-    replace_node node
+    # replace_node node
     sort
   end
   
@@ -27,9 +27,11 @@ class SetDataContainer
   end
   
   def replace_node(node)
-    set_members.each_index do |i|
-      if (set_members[i] == node)
-        set_members[i] = node
+    unless node.new_record?
+      set_members.each_index do |i|
+        if (set_members[i].id == node.id)
+          set_members[i] = node
+        end
       end
     end
   end
