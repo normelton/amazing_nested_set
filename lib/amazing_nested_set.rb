@@ -96,7 +96,7 @@ module NormElton
         end
         
         def self_and_ancestors
-          ancestors + [self]
+          [self] + ancestors
         end
         
         def left

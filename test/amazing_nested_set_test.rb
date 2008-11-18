@@ -97,6 +97,7 @@ class MultipleNodeTestCase < Test::Unit::TestCase
     assert_equal  n_cars.siblings, [n_trucks]
     assert_equal  n_coupes.parent, n_cars
     assert_equal  n_coupes.ancestors, [n_cars, n_root]
+    assert_equal  n_coupes.self_and_ancestors, [n_coupes, n_cars, n_root]
     assert_equal  n_coupes.depth, 2
   end
   
