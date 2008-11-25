@@ -178,6 +178,10 @@ module NormElton
           set_id = new_set_id
         end
         
+        def set_id
+          self[self.class.set_id_column_name]
+        end
+        
         protected
         
         def add_node(node, as = :child, recurse = false)
@@ -280,10 +284,6 @@ module NormElton
         def set_default_left_and_right
           self.left ||= 1
           self.right ||= 2
-        end
-        
-        def set_id
-          self[self.class.set_id_column_name]
         end
         
         def set_id=(val)
